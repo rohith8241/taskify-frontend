@@ -1,0 +1,197 @@
+<nav class="navbar bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand navText" href="#">
+        <img class="px-4" src="https://play-lh.googleusercontent.com/Q8yzPbaKizv0zezGqwcCQNJVS6fqVXw4jPFtP9QiVRujdbEL5rgXX6MtxAciNXzU6xdQ" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+      Taskify
+      </a>
+      <button class="btn navText">
+        Logout
+      </button>
+    </div>
+</nav>
+
+<div class="container-fluid">
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-center row p-2">
+            <div class="col-md-3 p-2">
+                <div class="card cardTotal">
+                    <div class="card-body widgetCard">
+                        <!-- <div class="widgetIcon">
+                            <i class="fas fa-tasks"></i>
+                        </div> -->
+                        <div class="widgetContent">
+                            <h5 class="card-title">Total Tasks</h5>
+                            <p class="widgetNumber" id="total-tasks">{{tasks.length}}</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-3 p-2">
+                <div class="card cardActive">
+                    <div class="card-body widgetCard">
+                        <div class="widgetContent">
+                            <h5 class="card-title">Active Tasks</h5>
+                            <p class="widgetNumber" id="total-tasks">
+                                {{getTasksCount('not started')}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 p-2">
+                <div class="card cardCompleted">
+                    <div class="card-body widgetCard">
+                        <!-- <div class="widgetIcon">
+                            <i class="fas fa-check-circle"></i>
+                        </div> -->
+                        <div class="widgetContent">
+                            <h5 class="card-title">Completed Tasks</h5>
+                            <p class="widgetNumber" id="total-tasks">{{getTasksCount('completed')}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="col-md-12">
+        <div class="d-flex align-items-center justify-content-start">
+            <button class="btn btn-primary">Add Task</button>
+        </div>
+    </div> -->
+</div>
+
+<!-- <div class="d-flex p-1 align-items-center justify-content-end">
+    <button class="btn btn-primary add-task-btn" (click)="openDialog()">Add New Task</button>
+</div> -->
+
+<div class="container containerColor">
+    <h2 class="d-flex justify-content-center mt-4 p-3">Task List</h2>
+    <div class="d-flex p-1 align-items-center justify-content-end">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="addTask()">
+            Add New Task
+          </button>
+    </div>
+    <div class="p-2" *ngIf="tasks.length > 0">
+        <div class="tableResponsive">
+            <table class="mt-2 table table-no-border">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Due Date</th>
+                        <th>Priority <i class="fas fa-filter" (click)="filterByPriority()"></i></th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let task of tasks">
+                        <td>{{ task.id }}</td>
+                        <td>{{ task.title }}</td>
+                        <td>{{ task.description }}</td>
+                        <td>{{ convertToDate(task.due_date) | date }}</td>
+                        <td>{{ task.priority }}</td>
+                        <td>{{ task.status }}</td>
+                        <td>
+                            <button class="btn btn-link text-primary" data-bs-target="#exampleModal" data-bs-toggle="modal" (click)="openExistingTask(task.id)"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-link text-danger" (click)="deleteTask(task.id)"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <!-- class="tableResponsive scrollTable" -->
+        <!-- <table class="mt-2 table table-no-border">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Due Date</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let task of tasks">
+                    <td>{{ task.id }}</td>
+                    <td>{{ task.title }}</td>
+                    <td>{{ task.description }}</td>
+                    <td>{{ convertToDate(task.due_date) | date }}</td>
+                    <td>{{ task.priority }}</td>
+                    <td>{{ task.status }}</td>
+                    <td>
+                        <button class="btn btn-link text-primary" data-bs-target="#exampleModal" data-bs-toggle="modal" (click)="openExistingTask(task.id)"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-link text-danger"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table> -->
+    </div>
+    <div *ngIf="tasks.length === 0" class="d-flex justify-content-center">
+        <div class="p-2">
+            <h2>Connect to server to get tasks</h2>
+        </div>
+    </div>
+</div>
+</div>
+
+
+  <!--Modal-->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">{{editTask ? 'Edit Task' : 'New Task'}}</h1>
+          <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="addTaskForm" class="task-form">
+                <div class="p-2 form-row">
+                    <label class="form-label" for="title">Title</label>
+                    <input class="form-control" id="title" formControlName="title" />
+                </div>
+        
+                <div class="p-2 form-row">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea class="form-control" id="description" formControlName="description" rows="4"></textarea>
+                </div>
+        
+                <div class="p-2 form-row">
+                    <label class="form-label" for="dueDate">Due Date</label>
+                    <input class="form-control" id="dueDate" formControlName="dueDate" [value]="this.addTaskForm.value.dueDate | date:'yyyy-MM-dd'"  type="date" />
+                </div>
+        
+                <div class="p-2 d-flex row">
+                    <div class="col-md-6">
+                        <label class="form-label" for="priority">Priority</label>
+                        <select id="priority" class="form-control" formControlName="priority">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                    </div>
+        
+                    <div class="col-md-6">
+                        <label class="form-label" for="status">Status</label>
+                        <select class="form-control" id="status" formControlName="status">
+                            <option value="completed">Completed</option>
+                            <option value="pending">Pending</option>
+                            <option value="not started">Not Started</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" type="submit" data-bs-dismiss="modal" [disabled]="addTaskForm.invalid" (click)="onSubmit()">{{editTask ? 'Update' : 'Save changes'}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
